@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { apiClient } from '@/lib/api/apiClient';
 import type { GameDetails } from '@/types/dashboard/game.types';
 import GameOverall from '@/components/game/GameOverall';
-import DataErrorPage from '@/components/error/DataErrorPage';
+import DataErrorPage from '@/components/shared/DataErrorPage';
 import AchievementList from '@/components/game/AchievementList';
 import { useMemo, useState } from 'react';
 import type { AchievementFilterOptions } from '@/types/filters/filters.types';
@@ -29,6 +29,7 @@ export default function GamePage() {
   } = useQuery({
     queryKey: ['game', gameId],
     queryFn: () => apiClient<GameDetails>(`/dashboard/game/${gameId}`),
+    staleTime: 5 * 60 * 1000,
   });
 
   const unlockedAchievements =

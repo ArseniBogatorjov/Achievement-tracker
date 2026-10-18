@@ -11,7 +11,7 @@ export default function DataErrorPage() {
           </div>
 
           <div className="space-y-2">
-            <CardTitle className="text-xl">Unable to load dashboard</CardTitle>
+            <CardTitle className="text-xl">Unable to load game data</CardTitle>
 
             <p className="text-sm leading-relaxed text-zinc-500">
               We couldn&#39;t load your games and statistics right now. Please

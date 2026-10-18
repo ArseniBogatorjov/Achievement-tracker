@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api/apiClient';
 import StatisticsSection from '@/components/dashboard/StatisticsSection';
 import GamesList from '@/components/dashboard/GamesList';
@@ -8,18 +8,17 @@ import { useMemo, useState } from 'react';
 import type { DashboardStats } from '@/types/dashboard/dashboard.types';
 import type { GameFilterOptions } from '@/types/filters/filters.types';
 import type { LibraryGame } from '@/types/dashboard/game.types';
-import DataErrorPage from '@/components/error/DataErrorPage';
+import DataErrorPage from '@/components/shared/DataErrorPage';
 import { getDisplayedGames } from '@/lib/dashboard/filter-games.utils';
 import Searchbar from '@/components/shared/Searchbar';
-import SteamSyncSection from '@/components/dashboard/SteamSyncSection';
 import FilterButtons from '@/components/shared/FilterButtons';
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
 import { GAME_FILTERS } from '@/lib/constants/filters';
 import SaveSteamSection from '@/components/dashboard/SaveSteamSection';
+import { useAuth } from '@/providers/AuthProvider';
+import SteamAccountSection from '@/components/dashboard/SteamAccountSection';
 
 export default function Dashboard() {
-  const queryClient = useQueryClient();
-
   const {
     data: stats,
     isLoading: isStatsLoading,
@@ -41,13 +40,15 @@ export default function Dashboard() {
   const [filter, setFilter] = useState<GameFilterOptions>('all');
   const [search, setSearch] = useState<string>('');
 
+  const { user, refetchUser } = useAuth();
+
   const filteredGames = useMemo(
     () => getDisplayedGames(games ?? [], filter, search),
     [filter, games, search],
   );
 
-  const handleSyncSuccess = async () => {
-    await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+  const handleSaveSuccess = async () => {
+    await refetchUser();
   };
 
   if (isStatsLoading || isPlayingLoading) {
@@ -66,8 +67,11 @@ export default function Dashboard() {
           completedGames={stats?.completedGames ?? 0}
           averageCompletionPercent={stats?.averageCompletionPercent ?? 0}
         />
-        <SteamSyncSection onSyncSuccess={handleSyncSuccess} />
-        <SaveSteamSection />
+        {user?.steamId ? (
+          <SteamAccountSection />
+        ) : (
+          <SaveSteamSection onSaveSuccess={handleSaveSuccess} />
+        )}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <FilterButtons
             filter={filter}

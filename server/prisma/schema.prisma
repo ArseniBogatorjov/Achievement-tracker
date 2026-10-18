@@ -41,7 +41,7 @@ model Game {
 model Achievement {
   id           String   @id @default(uuid())
   gameId       String
-  game         Game     @relation(fields: [gameId], references: [id])
+  game         Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
   apiname      String
   name         String
   description  String?
@@ -59,8 +59,8 @@ model UserGame {
   id                String           @id @default(uuid())
   userId            String
   gameId            String
-  user              User             @relation(fields: [userId], references: [id])
-  game              Game             @relation(fields: [gameId], references: [id])
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game              Game             @relation(fields: [gameId], references: [id], onDelete: Cascade)
   playtimeMinutes   Int              @default(0)
   completionPercent Float            @default(0.0)
   status            CompletionStatus @default(backlog)
@@ -74,8 +74,8 @@ model UserAchievement {
   id            String      @id @default(uuid())
   userId        String
   achievementId String
-  user          User        @relation(fields: [userId], references: [id])
-  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
   unlockedAt    DateTime    @default(now())
 
   @@unique([userId, achievementId])
