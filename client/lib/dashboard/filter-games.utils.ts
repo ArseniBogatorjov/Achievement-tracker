@@ -1,7 +1,12 @@
 import type { LibraryGame } from '@/types/dashboard/game.types';
 import type { GameFilterOptions } from '@/types/filters/filters.types';
+import { sortGames } from '@/lib/dashboard/sort-games.utils';
+import { GameSortOptions } from '@/types/sort/sort.types';
 
-function filterGames(filter: GameFilterOptions, games: LibraryGame[]) {
+function filterGames(
+  filter: GameFilterOptions,
+  games: LibraryGame[],
+): LibraryGame[] {
   switch (filter) {
     case 'all':
       return games;
@@ -20,14 +25,17 @@ export function getDisplayedGames(
   games: LibraryGame[],
   filter: GameFilterOptions,
   search: string,
-) {
+  sortBy: GameSortOptions,
+): LibraryGame[] {
   const filteredGames = filterGames(filter, games);
 
   const query = search.trim().toLowerCase();
 
-  if (!query) return filteredGames;
+  const searchedGames = query
+    ? filteredGames.filter((game) =>
+        game.game.name.toLowerCase().includes(query),
+      )
+    : filteredGames;
 
-  return filteredGames.filter((game) =>
-    game.game.name.toLowerCase().includes(query),
-  );
+  return sortGames(searchedGames, sortBy);
 }

@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { steamIdSchema } from '@/lib/validations/steam.schema';
 import { apiClient } from '@/lib/api/apiClient';
+import { styles } from '@/lib/constants/styles';
+import { cn } from '@/lib/utils';
 
 interface EditSteamModalProps {
   isModalOpen: boolean;
@@ -76,7 +78,7 @@ export default function SteamEditModal({
             required
             onChange={(e) => setSteamId(e.target.value)}
             placeholder="Enter your new Steam ID..."
-            className="border-zinc-800 bg-zinc-900 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-emerald-500"
+            className={cn(styles.INPUT)}
           />
 
           {validationError && (

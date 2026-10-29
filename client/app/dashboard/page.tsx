@@ -9,7 +9,6 @@ import type { DashboardStats } from '@/types/dashboard/dashboard.types';
 import type { GameFilterOptions } from '@/types/filters/filters.types';
 import type { LibraryGame } from '@/types/dashboard/game.types';
 import DataErrorPage from '@/components/shared/DataErrorPage';
-import { getDisplayedGames } from '@/lib/dashboard/filter-games.utils';
 import Searchbar from '@/components/shared/Searchbar';
 import FilterButtons from '@/components/shared/FilterButtons';
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
@@ -17,6 +16,10 @@ import { GAME_FILTERS } from '@/lib/constants/filters';
 import SaveSteamSection from '@/components/dashboard/SaveSteamSection';
 import { useAuth } from '@/providers/AuthProvider';
 import SteamAccountSection from '@/components/dashboard/SteamAccountSection';
+import SortSelect from '@/components/shared/SortSelect';
+import { GAME_SORTING } from '@/lib/constants/sorting';
+import { GameSortOptions } from '@/types/sort/sort.types';
+import { getDisplayedGames } from '@/lib/dashboard/filter-games.utils';
 
 export default function Dashboard() {
   const {
@@ -30,32 +33,33 @@ export default function Dashboard() {
 
   const {
     data: games,
-    isLoading: isPlayingLoading,
-    isError: isPlayingError,
+    isLoading: isGamesLoading,
+    isError: isGamesError,
   } = useQuery<LibraryGame[]>({
     queryKey: ['dashboard', 'playing'],
     queryFn: () => apiClient('/dashboard/library'),
   });
 
   const [filter, setFilter] = useState<GameFilterOptions>('all');
+  const [sortBy, setSortBy] = useState<GameSortOptions>('default');
   const [search, setSearch] = useState<string>('');
 
   const { user, refetchUser } = useAuth();
 
   const filteredGames = useMemo(
-    () => getDisplayedGames(games ?? [], filter, search),
-    [filter, games, search],
+    () => getDisplayedGames(games ?? [], filter, search, sortBy),
+    [filter, games, search, sortBy],
   );
 
   const handleSaveSuccess = async () => {
     await refetchUser();
   };
 
-  if (isStatsLoading || isPlayingLoading) {
+  if (isStatsLoading || isGamesLoading) {
     return <DashboardSkeleton />;
   }
 
-  if (isStatsError || isPlayingError) {
+  if (isStatsError || isGamesError) {
     return <DataErrorPage />;
   }
 
@@ -77,6 +81,12 @@ export default function Dashboard() {
             filter={filter}
             setFilter={setFilter}
             filters={GAME_FILTERS}
+          />
+          <SortSelect
+            placeholder={'default'}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            options={GAME_SORTING}
           />
           <Searchbar
             search={search}

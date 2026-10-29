@@ -59,7 +59,7 @@ export default function SaveSteamSection({ onSaveSuccess }: SteamSaveProps) {
             onChange={(e) => {
               setSteamId(e.target.value);
             }}
-            className={cn(styles.INPUT, 'focus-visible:ring-emerald-500')}
+            className={cn(styles.INPUT)}
           />
           {validationError && (
             <p className="pl-1 text-xs text-red-400">{validationError}</p>
