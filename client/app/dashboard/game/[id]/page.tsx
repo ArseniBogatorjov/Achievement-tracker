@@ -14,10 +14,14 @@ import { getDisplayedAchievements } from '@/lib/game/filter-achievements.utils';
 import FilterButtons from '@/components/shared/FilterButtons';
 import GameSkeleton from '@/components/game/GameSkeleton';
 import { ACHIEVEMENT_FILTERS } from '@/lib/constants/filters';
+import { AchievementSortOptions } from '@/types/sort/sort.types';
+import SortSelect from '@/components/shared/SortSelect';
+import { ACHIEVEMENT_SORTING } from '@/lib/constants/sorting';
 
 export default function GamePage() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<AchievementFilterOptions>('all');
+  const [sortBy, setSortBy] = useState<AchievementSortOptions>('default');
 
   const params = useParams();
   const gameId = params.id as string;
@@ -40,8 +44,13 @@ export default function GamePage() {
 
   const filteredAchievements = useMemo(
     () =>
-      getDisplayedAchievements(game?.game.achievements ?? [], filter, search),
-    [filter, search, game?.game.achievements],
+      getDisplayedAchievements(
+        game?.game.achievements ?? [],
+        filter,
+        search,
+        sortBy,
+      ),
+    [filter, search, game?.game.achievements, sortBy],
   );
 
   if (isError) {
@@ -69,6 +78,11 @@ export default function GamePage() {
             filter={filter}
             setFilter={setFilter}
             filters={ACHIEVEMENT_FILTERS}
+          />
+          <SortSelect
+            options={ACHIEVEMENT_SORTING}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
           />
           <Searchbar
             search={search}

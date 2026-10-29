@@ -1,5 +1,7 @@
 import type { Achievement } from '@/types/dashboard/achievement.types';
 import type { AchievementFilterOptions } from '@/types/filters/filters.types';
+import { sortAchievements } from '@/lib/game/sort-achievements.utils';
+import { AchievementSortOptions } from '@/types/sort/sort.types';
 
 function filterAchievements(
   filter: AchievementFilterOptions,
@@ -27,16 +29,19 @@ export function getDisplayedAchievements(
   achievements: Achievement[],
   filter: AchievementFilterOptions,
   search: string,
+  sortBy: AchievementSortOptions,
 ) {
   const filteredAchievements = filterAchievements(filter, achievements);
 
   const query = search.trim().toLowerCase();
 
-  if (!query) return filteredAchievements;
+  const searchedAchievements = query
+    ? filteredAchievements.filter(
+        (achievement) =>
+          achievement.name.toLowerCase().includes(query) ||
+          achievement.description?.toLowerCase().includes(query),
+      )
+    : filteredAchievements;
 
-  return filteredAchievements.filter(
-    (achievement) =>
-      achievement.name.toLowerCase().includes(query) ||
-      achievement.description?.toLowerCase().includes(query),
-  );
+  return sortAchievements(searchedAchievements, sortBy);
 }

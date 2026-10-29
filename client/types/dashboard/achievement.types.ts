@@ -3,7 +3,7 @@ export interface Achievement {
   name: string;
   description: string | null;
   iconUrl: string;
-  globalRarity: number | null;
+  globalRarity: number;
   isMissable: boolean;
   userAchievements: UserAchievement[];
 }

@@ -83,7 +83,6 @@ export default function Dashboard() {
             filters={GAME_FILTERS}
           />
           <SortSelect
-            placeholder={'default'}
             sortBy={sortBy}
             setSortBy={setSortBy}
             options={GAME_SORTING}

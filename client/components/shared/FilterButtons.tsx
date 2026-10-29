@@ -27,7 +27,7 @@ export default function FilterButtons<T extends string>({
           key={value}
           variant={filter === value ? 'default' : 'ghost'}
           onClick={() => setFilter(value)}
-          className={className}
+          className={cn('h-7 px-3 text-sm', className)}
         >
           {label}
         </Button>
