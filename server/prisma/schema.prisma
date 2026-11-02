@@ -31,6 +31,7 @@ model Game {
   steamAppId Int     @unique
   name       String
   coverUrl   String?
+  guideUrl   String?
 
   achievements Achievement[]
   users        UserGame[]

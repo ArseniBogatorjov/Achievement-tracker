@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SteamModule } from './steam/steam.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ScavengerModule } from './scavenger/scavenger.module';
+import { SteamApiService } from './steam-api/steam-api.service';
 
 @Module({
   imports: [
@@ -19,6 +20,6 @@ import { ScavengerModule } from './scavenger/scavenger.module';
     ScavengerModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, SteamApiService],
 })
 export class AppModule {}

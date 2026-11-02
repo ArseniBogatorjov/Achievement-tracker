@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   HttpStatus,
+  Logger,
   Patch,
   Post,
   UseGuards,
@@ -13,10 +14,16 @@ import type { User } from '@prisma/client';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { StatusResponseDto } from '../auth/dto/status-response.dto';
 import { SaveSteamDto } from './dto/sync-steam-id.dto';
+import { SteamSyncService } from './steam-sync.service';
 
 @Controller('steam')
 export class SteamController {
-  constructor(private readonly steamService: SteamService) {}
+  private readonly logger = new Logger(SteamController.name);
+
+  constructor(
+    private readonly steamService: SteamService,
+    private readonly steamSyncService: SteamSyncService,
+  ) {}
 
   @ApiOperation({
     summary: 'Get user steam data',
@@ -29,9 +36,9 @@ export class SteamController {
   @UseGuards(AuthGuard('jwt'))
   @Post('sync')
   syncUserGames(@CurrentUser() user: User) {
-    this.steamService
+    this.steamSyncService
       .syncUserGames(user.id)
-      .catch((error) => console.error(error));
+      .catch((error) => this.logger.error(error));
     return { message: 'synchronization started' };
   }
 
